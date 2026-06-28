@@ -74,13 +74,18 @@ bool    DEBUG = true;            // <- Your Preference on Power On, can also be 
 
 // === PRIVATE credentials =====
 
-const char* ssid =               "...";   // ### INSERT your wlan ssid    [mandatory]
-const char* password =           "...";   // ### INSERT your password     [mandatory]
+const char* ssid =               "ASUS_W";   // ### INSERT your wlan ssid    [mandatory]
+const char* password =           "whiteWOLF667djkr";   // ### INSERT your password     [mandatory]
 
-const char* OPENAI_KEY =         "...";   // LLM & TTS  - ### INSERT your OpenAI API KEY     [mandatory]
-const char* GROQ_KEY =           "...";   // LLM (fast) - ### INSERT your GroqCloud API KEY  [mandatory]
-const char* ELEVENLABS_KEY =     "...";   // STT (fast) - ### INSERT your ElevenLabs KEY     [mandatory]
-const char* DEEPGRAM_KEY =       "";      // STT (slow) - ### INSERT your Deepgram KEY       [optional]   
+const char* OPENAI_KEY =         "sk_mock_key_123456789"; 
+const char* GROQ_KEY =           "gsk_mock_key_123456789";   
+const char* ELEVENLABS_KEY =     "el_mock_key_123456789";   
+const char* DEEPGRAM_KEY =       "dg_mock_key_123456789";   
+
+//const char* OPENAI_KEY =         "...";   // LLM & TTS  - ### INSERT your OpenAI API KEY     [mandatory]
+//const char* GROQ_KEY =           "...";   // LLM (fast) - ### INSERT your GroqCloud API KEY  [mandatory]
+//const char* ELEVENLABS_KEY =     "...";   // STT (fast) - ### INSERT your ElevenLabs KEY     [mandatory]
+//const char* DEEPGRAM_KEY =       "";      // STT (slow) - ### INSERT your Deepgram KEY       [optional]   
 
  
 // === user settings =========== 
@@ -95,97 +100,37 @@ int gl_VOL_STEPS[]= {11,16,21};  // used for VOL_BTN only: user defined audio vo
 // === HARDWARE settings ======= // SELECT (uncomment) 1 of the pre-defined PCB (Printed Circuit Board) or use own settings ... 
 // ## NEW [2026-01-06]: KALO AI Board PCB added + SD Card custom pins + I2S micro pins (no longer in lib_audio_recording.ino) 
                                  
-/* --- PCB: Luca 2.0 Duo/R ----  // ESP32 WROOM (N4R0, no PSRAM) & SD card -or- ESP32-WROVER-E (N8R8, 4MB PSRAM limited, w/wo SD) 
-// Reminder AUDIO.H:             // ESP32 WROOM (no PSRAM) needs AUDIO.H 3.0.11g, ESP32-WROVER-E (PSRAM) supports latest AUDIO.H 
-#define NO_PIN          -1       // ALIAS 'not used' -> supported on optional pins (4xSD, RECORD_BTN, TOUCH, VOL_POTI, VOL_BTN)  
-#define SD_CS           5        // 4 x SD Card Reader pins, using VSPI defaults 
-#define SD_SCK          18       
-#define SD_MISO         19       
-#define SD_MOSI         23   
-#define I2S_WS          22       // 4 x I2S Audio input pins for microphone INMP441 (referenced in 'lib_audio_recording.ino')     
-#define I2S_SD          35           
-#define I2S_SCK         33   
-#define I2S_LR          HIGH     // HIGH because L/R pin of INMP441 is connected to Vcc (RIGHT channel)
-#define pin_I2S_DOUT    25       // 3 x I2S Audio output pins (e.g. for I2S Amplifier MAX98357) 
-#define pin_I2S_LRC     26       
-#define pin_I2S_BCLK    27        
-#define pin_LED_RED     15       // Status R-G-B pins (Examples: KALO PCB 15-21-4,  KALO Proto 15-2-0, TECHIESMS 15-2-4) 
-#define pin_LED_GREEN   21       // .. rule in code below: LOW switches led color ON 
-#define pin_LED_BLUE    4  
-#define flg_LED_DIGITAL true     // TRUE: Serial Resistor, common Vcc (FALSE: [TECHIESMS]: w/wo Resistor + common GND, Analog)
-#define pin_RECORD_BTN  36       // RECORD tactile button on PCB (Printed Circuit Board), PULL-UP soldered
-#define pin_TOUCH       13       // RECORD TOUCH control on TOP panel
-#define pin_VOL_POTI    34       // Analogue wheel POTI as continuous audio volume control
-#define pin_VOL_BTN     NO_PIN   // not needed (adjusting audio volume with continuous VOL_POTI) */ 
+// --- PCB: CUSTOM ESP32-S3 SUPERMINI ------
+#define NO_PIN          -1       
 
-/* --- PCB: TECHIESMS device --- // ESP32 WROOM (N4R0, no PSRAM) & SD: https://techiesms.com/product/portable-ai-voice-assistant/
-// Reminder AUDIO.H:             // ESP32 WROOM (no PSRAM) on Techiesms device needs older AUDIO.H 3.0.11g 
-#define NO_PIN          -1       // #ALIAS 'not used' -> supported on optional pins (4xSD, RECORD_BTN, TOUCH, VOL_POTI, VOL_BTN)  
-#define SD_CS           5        // 4 x SD Card Reader pins, using VSPI defaults 
-#define SD_SCK          18       
-#define SD_MISO         19       
-#define SD_MOSI         23     
-#define I2S_WS          22       // 4 x I2S Audio input pins for microphone INMP441 (referenced in 'lib_audio_recording.ino')     
-#define I2S_SD          35           
-#define I2S_SCK         33   
-#define I2S_LR          HIGH     // HIGH because L/R pin of INMP441 is connected to Vcc (RIGHT channel)
-#define pin_I2S_DOUT    25       // 3 x I2S Audio output pins (e.g. for I2S Amplifier MAX98357)  
-#define pin_I2S_LRC     26       
-#define pin_I2S_BCLK    27        
-#define pin_LED_RED     15       // Status LED R-G-B pins (Examples: KALO PCB 15-21-4,  KALO Proto 15-2-0, TECHIESMS 15-2-4) 
-#define pin_LED_GREEN   2        // .. rule in code below: LOW switches led color ON 
-#define pin_LED_BLUE    4  
-#define flg_LED_DIGITAL false    // (!) FALSE: [TECHIESMS]: no Resistor + common GND (Analog) (TRUE: Serial Resistor, common Vcc)
-#define pin_RECORD_BTN  36       // RECORD tactile button on PCB (Printed Circuit Board), PULL-UP soldered
-#define pin_TOUCH       12       // # KALO mod # - additional RECORD TOUCH control on TOP panel (soldered to pin 12)
-#define pin_VOL_POTI    NO_PIN   // no analogue wheel POTI available, using VOL_BTN for audio volume control  
-#define pin_VOL_BTN     13       // # KALO mod # - using side button for audio volume (orig. REPEAT button no longer needed) */
-
-/* --- PCB: ElatoAI ------------ // ESP32-S3 Dev (N16R8, 8MB PSRAM): https://github.com/akdeb/ElatoAI / https://www.elatoai.com/  
-#define NO_PIN          -1       // ALIAS 'not used' -> supported on optional pins (4xSD, RECORD_BTN, TOUCH, VOL_POTI, VOL_BTN)  
-#define SD_CS           NO_PIN   // no SD card reader connected 
+// Настройки SD-карты (отключаем, так как на SuperMini её нет)
+#define SD_CS           NO_PIN   
 #define SD_SCK          NO_PIN           
 #define SD_MISO         NO_PIN        
 #define SD_MOSI         NO_PIN       
-#define I2S_WS          4        // 4 x I2S Audio input pins for microphone INMP441 (referenced in 'lib_audio_recording.ino')     
-#define I2S_SD          14           
-#define I2S_SCK         1   
-#define I2S_LR          LOW      // LOW because L/R pin of INMP441 is connected to GND (default LEFT channel)      
-#define pin_I2S_DOUT    7        // 3 x I2S Audio output pins (e.g. for I2S Amplifier MAX98357)  
-#define pin_I2S_LRC     5        
-#define pin_I2S_BCLK    6        
-#define pin_LED_RED     9        // Status LED R-G-B pins (rule in code below: LOW switches led color ON)  
-#define pin_LED_GREEN   8        
-#define pin_LED_BLUE    13  
-#define flg_LED_DIGITAL true     // TRUE: Serial Resistor, common Vcc (FALSE: without resistor, common GND, analogue)
-#define pin_TOUCH       3        // # KALO mod # - self soldered RECORD TOUCH (free: ESP32 12,14,32 / ESP32-S3: 3,12,14) 
-#define pin_VOL_POTI    NO_PIN   // no analogue wheel POTI available, using VOL_BTN for audio volume control 
-#define pin_VOL_BTN     2        // # KALO mod # - using original RECORD side button used as audio volume control 
-#define pin_RECORD_BTN  NO_PIN   // # KALO mod # - no 2nd button available (original RECORD side btn on pin 2 used as VOL_BTN) */
 
-// --- PCB: KALO AI BOARD ------ // ## NEW - DFRobot FireBeetle2 ESP32-S3 WROOM-1(N16R8, 8MB PSRAM) - KALO AI Board PCB:
-// PCB Layout (battery powered): // https://github.com/kaloprojects/KALO-ESP32-Voice-Chat-AI-Friends/tree/main/hardware_pcb
-// WIKI DFRobot Fire Beetle 2:   // https://wiki.dfrobot.com/SKU_DFR0975_FireBeetle_2_Board_ESP32_S3
-#define NO_PIN          -1       // ALIAS 'not used' -> supported on optional pins (4xSD, RECORD_BTN, TOUCH, VOL_POTI, VOL_BTN)  
-#define SD_CS           15       // 4 x SD Card Reader pins, optional (e.g. for playing music files) 
-#define SD_SCK          14          
-#define SD_MISO         12        
-#define SD_MOSI         13       
-#define I2S_WS          8        // 4 x I2S Audio input pins for microphone INMP441 (referenced in 'lib_audio_recording.ino')     
-#define I2S_SD          11           
-#define I2S_SCK         10   
-#define I2S_LR          LOW      // LOW because L/R pin of INMP441 is connected to GND (default LEFT channel)    
-#define pin_I2S_DOUT    4        // 3 x I2S Audio output pins (for I2S Amplifier MAX98357) 
-#define pin_I2S_LRC     5        
-#define pin_I2S_BCLK    6        
-#define pin_LED_RED     0        // Status LED R-G-B pins (rule in code below: LOW switches led color ON)  
-#define pin_LED_GREEN   9       
-#define pin_LED_BLUE    18  
-#define flg_LED_DIGITAL true     // TRUE: Serial Resistor, common Vcc (FALSE: without resistor, common GND, analogue)
-#define pin_RECORD_BTN  38       // 1st recording control: push button 
-#define pin_TOUCH       7        // 2nd recording control: touch button 
-#define pin_VOL_POTI    3        // adjusting audio volume
-#define pin_VOL_BTN     NO_PIN   // not needed (adjusting audio volume with continuous VOL_POTI) 
+// ЖЕСТКАЯ НАСТРОЙКА ВАШЕГО МИКРОФОНА INMP441
+#define I2S_WS          5        // Ваша линия MIC_WS
+#define I2S_SD          6        // Ваша линия MIC_SD
+#define I2S_SCK         4        // Ваша линия MIC_SCK
+#define I2S_LR          LOW      // Направляем аудио в левый канал
+
+// Настройки динамика MAX98357 (если пока нет — оставляем свободные пины)
+#define pin_I2S_DOUT    7        
+#define pin_I2S_LRC     8        
+#define pin_I2S_BCLK    9        
+
+// Светодиоды и кнопки управления
+#define pin_LED_RED     NO_PIN        
+#define pin_LED_GREEN   NO_PIN       
+#define pin_LED_BLUE    NO_PIN  
+#define flg_LED_DIGITAL true     
+
+#define pin_RECORD_BTN  1        // Пин для кнопки записи (укажите любой свободный GPIO, если припаяли кнопку)
+#define pin_TOUCH       NO_PIN   
+#define pin_VOL_POTI    NO_PIN   
+#define pin_VOL_BTN     NO_PIN   
+
 
 
 // --- global Objects ----------
