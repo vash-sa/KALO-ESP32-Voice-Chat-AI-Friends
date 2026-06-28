@@ -15,8 +15,8 @@ jobs:
 
       - name: Install ESP32 Platform
         run: |
-          arduino-cli core update-index --additional-urls https://github.io
-          arduino-cli core install esp32:esp32 --additional-urls https://github.io
+          arduino-cli core update-index --additional-urls https://github.io/arduino-esp32/package_esp32_index.json
+          arduino-cli core install esp32:esp32 --additional-urls https://github.io/arduino-esp32/package_esp32_index.json
 
       - name: Install Required Libraries
         run: |
@@ -25,7 +25,7 @@ jobs:
       - name: Compile Sketch
         run: |
           mkdir -p build
-          arduino-cli compile --fqbn esp32:esp32:esp32s3 --additional-urls https://github.io KALO_ESP32_Voice_Chat_AI_Friends/KALO_ESP32_Voice_Chat_AI_Friends_20260118.ino --output-dir build
+          arduino-cli compile --fqbn esp32:esp32:esp32s3 --additional-urls https://github.io/arduino-esp32/package_esp32_index.json KALO_ESP32_Voice_Chat_AI_Friends/KALO_ESP32_Voice_Chat_AI_Friends_20260118.ino --output-dir build
 
       - name: Upload Firmware File
         uses: actions/upload-artifact@v4
