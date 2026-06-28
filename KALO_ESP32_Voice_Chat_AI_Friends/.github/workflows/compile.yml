@@ -1,0 +1,34 @@
+name: Manual Arduino Compile
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install ESP32 Platform
+        run: |
+          arduino-cli core update-index --additional-urls https://github.io
+          arduino-cli core install esp32:esp32 --additional-urls https://github.io
+
+      - name: Install Required Libraries
+        run: |
+          arduino-cli lib install "ArduinoJson"
+
+      - name: Compile Sketch
+        run: |
+          mkdir -p build
+          arduino-cli compile --fqbn esp32:esp32:esp32s3 --additional-urls https://github.io KALO_ESP32_Voice_Chat_AI_Friends/KALO_ESP32_Voice_Chat_AI_Friends_20260118.ino --output-dir build
+
+      - name: Upload Firmware File
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp32-supermini-bin
+          path: build/*.bin
