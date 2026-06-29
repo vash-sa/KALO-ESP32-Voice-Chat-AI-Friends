@@ -21,6 +21,7 @@ jobs:
       - name: Install Required Libraries
         run: |
           arduino-cli lib install "ArduinoJson"
+          arduino-cli lib install "ESP32-audioI2S"
 
       - name: Compile Sketch
         run: |
