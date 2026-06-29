@@ -20,14 +20,15 @@ jobs:
 
       - name: Install Required Libraries
         run: |
+          arduino-cli config set library.enable_unsafe_install true
           arduino-cli lib install "ArduinoJson"
-          arduino-cli lib install "ESP8266Audio"
+          arduino-cli lib install --git-url https://github.com/schreibfaul1/ESP32-audioI2S.git
 
       - name: Compile Sketch
         run: |
           mkdir -p build
-          arduino-cli compile --fqbn esp32:esp32:esp32s3 KALO_ESP32_Voice_Chat_AI_Friends --output-dir build
-
+          arduino-cli compile --fqbn esp32:esp32:esp32s3:CDCOnBoot=default,FlashFreq=80m,FlashMode=qio,FlashSize=8M,LoopCore=1,MSMCDebug=disabled,OPIPSRAM=disabled,PartitionScheme=default_8MB,PSRAM=opi,EventsCore=1,UploadGray=default,UploadSpeed=921600,ZigbeeMode=disabled \
+            KALO_ESP32_Voice_Chat_AI_Friends --output-dir build
       - name: Upload Firmware File
         uses: actions/upload-artifact@v4
         with:
